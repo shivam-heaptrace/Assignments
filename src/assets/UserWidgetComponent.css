@@ -1,0 +1,32 @@
+   html, body {
+    height: 100%;
+    margin: 0; 
+    padding: 0;
+}
+
+nav ul {
+    padding-left: 0;
+    list-style-type: none;
+    margin: 0;
+}
+
+li {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+li:hover {
+    /* display: ; */
+    /* color: blue; */
+    background-color: #b87df0;
+}
+
+.hidden {
+    display: none !important; /* Use !important to ensure it overrides everything */
+}
+
+#buttons button {
+    padding: 10;
+}
