@@ -20,7 +20,8 @@ li {
 li:hover {
     /* display: ; */
     /* color: blue; */
-    background-color: #b87df0;
+    background-color: #be86f1;
+    color: whitesmoke;
 }
 
 .hidden {
@@ -29,4 +30,8 @@ li:hover {
 
 #buttons button {
     padding: 10px;
+}
+
+#sort_filter button:hover {
+    background-color: #7b0ee0;
 }

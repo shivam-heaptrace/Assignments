@@ -1,14 +1,23 @@
-import './assets/UserWidgetComponent.css';
-
+import UserListComponent from './UserListComponent'
+import users  from "../assets/data.js";
+import '../assets/UserWidgetComponent.css';
+import { useState } from 'react';
 
 const UserWidgetComponent = () => {
-       function navigator() {
+    const [count, setCount] = useState(1);
+
+    function navigator() {
         const navBar = document.getElementById("navbar");
 
         if (navBar)
             navBar.classList.toggle('hidden');
          else 
             alert("Error: Element with ID 'navbar' not found.");
+    }  
+
+    function addUser() {
+        users.push({id : count, firstName : 'Rowam', lastName : 'Torres', email : 'rowan.torres@gmail.com', phone : '+1-235-473', lastLogin : '0205', role : 'user', status : true, action : 'edit or delete'})
+        setCount(count + 1)
     }
 
     return (
@@ -53,32 +62,21 @@ const UserWidgetComponent = () => {
                         <button type="button" style={{backgroundColor: 'white', color:'blueviolet', borderRadius:'11%'}}><i className="fa-solid fa-list"></i></button>
                         <button type="button" style={{backgroundColor: 'blueviolet', color:'white', borderRadius:'11%'}}><i className="fa-solid fa-grip"></i></button>
                     </span>
-                    <button type="button" style={{backgroundColor: 'blueviolet', color:'white', borderRadius:'11%'}}>+ Add User</button>
+                    <button onClick={addUser} type="button" style={{backgroundColor: 'blueviolet', color:'white', borderRadius:'11%'}}>+ Add User</button>
                 </div>
             </div>
             <div style={{border: '1px', borderColor: 'black', borderStyle:'solid', height:'80vh', width:'95%'}}>
                 <div style={{display: 'flex', justifyContent: 'space-between'}}>
                     <div>                        
-                        <span style={{backgroundColor: 'rgb(239, 239, 239)'}}><button type="button">Sort By</button></span>
-                        <span><button type="button">Filter By</button></span>
+                        <span style={{backgroundColor: 'rgb(239, 239, 239)'}}><button type="button"><i className="fa-solid fa-arrow-down-short-wide"></i> Sort By</button></span>
+                        <span><button type="button"><i className="fa-solid fa-filter"></i> Filter By</button></span>
                     </div>
                     <span>
-                        <input type="text" name="" id="" placeholder="Search here"></input>
+                        <input type="text" name="" id="" placeholder="🔍Search here"></input>
                     </span>
                 </div>
-                <div>                    
-                    <div style={{height: '5em', width: '15em', backgroundColor: '#d3cdcd', border: 'rgb(185, 182, 182) solid'}}>
-                        <div style={{marginTop: '8px', display: 'flex'}}>
-                            <div>
-                                <img src="https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg" alt="Women-face" style={{borderRadius: '50%', width: '50%', marginTop: '-6px', marginLeft: '8px'}}></img>
-                            </div>
-                            <div style={{display: 'flex', flexDirection: 'column', marginTop: '8px'}}>
-                                 <label>Rowam Torres</label>
-                                 <sub>rowan.torres@gmail.com</sub>
-                                 <sub>active</sub>
-                            </div>
-                        </div>
-                    </div>
+                <div style={{display:'flex', flexWrap: 'wrap', justifyContent:'flex-start'}}>  
+                   <UserListComponent users = {users}/>
                 </div>
             </div>
         </div>

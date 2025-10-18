@@ -1,4 +1,4 @@
-import UserWidgetComponent from './UserWidgetComponent.jsx';
+import UserWidgetComponent from "./Components/UserWidgetComponent";
 
 const App = () => {
   return (
