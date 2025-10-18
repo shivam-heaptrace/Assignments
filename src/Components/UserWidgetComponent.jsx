@@ -1,10 +1,10 @@
 import UserListComponent from './UserListComponent'
 import users  from "../assets/data.js";
 import '../assets/UserWidgetComponent.css';
-import { useState } from 'react';
+// import { useState } from 'react';
 
-const UserWidgetComponent = () => {
-    const [count, setCount] = useState(1);
+const UserWidgetComponent = ({onSwitchToAdd}) => {
+    // const [count, setCount] = useState(1);
 
     function navigator() {
         const navBar = document.getElementById("navbar");
@@ -16,8 +16,9 @@ const UserWidgetComponent = () => {
     }  
 
     function addUser() {
-        users.push({id : count, firstName : 'Rowam', lastName : 'Torres', email : 'rowan.torres@gmail.com', phone : '+1-235-473', lastLogin : '0205', role : 'user', status : true, action : 'edit or delete'})
-        setCount(count + 1)
+        // users.push({id : count, firstName : 'Rowam', lastName : 'Torres', email : 'rowan.torres@gmail.com', phone : '+1-235-473', lastLogin : '0205', role : 'user', status : true, action : 'edit or delete'})
+        // setCount(count + 1)
+        onSwitchToAdd()
     }
 
     return (
@@ -72,7 +73,7 @@ const UserWidgetComponent = () => {
                         <span><button type="button"><i className="fa-solid fa-filter"></i> Filter By</button></span>
                     </div>
                     <span>
-                        <input type="text" name="" id="" placeholder="🔍Search here"></input>
+                        <input type="text" placeholder="🔍Search here"></input>
                     </span>
                 </div>
                 <div style={{display:'flex', flexWrap: 'wrap', justifyContent:'flex-start'}}>  

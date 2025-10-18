@@ -1,16 +1,4 @@
 let UserListComponent = ({ users }) => {
-  function User(id, firstName, lastName, email, phone, lastLogin, role, status, action ) {
-    this.id = id;
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.email = email;
-    this.phone = phone;
-    this.lastLogin = lastLogin;
-    this.role = role;
-    this.status = status;
-    this.action = action;
-  }
-
   return (
     <>
       {users.map((user) => (
@@ -21,9 +9,9 @@ let UserListComponent = ({ users }) => {
               Lorem ipsum dolor sit amet, consectetur
             </div>
             <div style={{ display: "flex", flexDirection:'column', marginTop: "8px"}}>
-                <label>{user.id} {user.firstName} {user.lastName}</label>
+                <label>{user.firstName} {user.lastName}</label>
                 <sub>{user.email}</sub>
-                <sub>{user.status ? "active" : "inactive"}</sub>
+                <sub>{user.status ? "🔵 active" : "🔴 inactive"}</sub>
             </div>
           </div>
         </div>
