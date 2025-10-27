@@ -22,7 +22,7 @@ const App = () => {
   else if (currentView === 'add') 
     Content = <AddUserComponent onSwitchToList={switchToList} />
   else if (currentView === 'edit') 
-    Content = <EditUserComponent userId={editingUserId} onSwitchToList={switchToList} />
+    Content = <EditUserComponent userId={editingUserId} onSwitchToList={switchToList} onSwitchToAdd={switchToAdd}/>
 
   return (<>
     {Content}
