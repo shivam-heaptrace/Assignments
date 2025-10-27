@@ -1,43 +1,93 @@
-import { useState } from "react";
-import users  from "../assets/data.js";
+import React, { useState } from "react";
+import users from "../assets/data.js";
+
+const UserRole = Object.freeze({
+  USER: "user",
+  ADMIN: "admin",
+  SUPER_ADMIN: "super admin",
+});
+
+const ROLE_OPTIONS = Object.values(UserRole);
+
+const UserStatus = Object.freeze({
+  ACTIVE: "active",
+  INACTIVE: "inactive",
+});
+
+const STATUS_OPTIONS = Object.values(UserStatus);
 
 const AddUserComponent = ({ onSwitchToList }) => {
-    function User(id, firstName, lastName, email, phone, lastLogin, role, status, action ) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.phone = phone;
-        this.lastLogin = lastLogin;
-        this.role = role;
-        this.status = status;
-        this.action = action;
-    }
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "user@example.com",
+    phone: "",
+    role: "",
+    status: "",
+    password: "",
+    confirmPassword: "",
+    lastLogin: new Date().toLocaleDateString(),
+    action: "edit or delete",
+  });
 
-    const [count, setCount] = useState(1);
-    const [user, setUser] = useState(new User());
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("New User Form Submitted!" + user);
-    // users.push({id : count, firstName : 'Rowam', lastName : 'Torres', email : 'rowan.torres@gmail.com', phone : '+1-235-473', lastLogin : '0205', role : 'user', status : true, action : 'edit or delete'})
-    users.push(user)
-    setCount(count + 1)
+
+    if (formData.password !== formData.confirmPassword) {
+      alert("Error: Passwords do not match.");
+      return;
+    }
+
+    const nextId = users.length > 0 ? users[users.length - 1].id + 1 : 101;
+
+    const newUser = {
+      id: nextId,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      phone: formData.phone,
+      role: formData.role,
+      status: formData.status === UserStatus.ACTIVE,
+      lastLogin: formData.lastLogin,
+      action: formData.action,
+    };
+
+    users.push(newUser);
+
+    console.log("New User Form Submitted!", newUser);
+    alert(
+      `The user "${newUser.firstName}" has been added successfully with ID ${newUser.id}`
+    );
+
     onSwitchToList();
   };
 
   function navigator() {
     const navBar = document.getElementById("navbar");
-
     if (navBar) navBar.classList.toggle("hidden");
     else alert("Error: Element with ID 'navbar' not found.");
   }
 
   return (
     <div className="p-6 bg-white shadow-xl rounded-xl w-full max-w-md mx-auto transition-all duration-300 transform scale-100">
-      <div style={{ display: "flex", flexDirection: "row", width: "100%", height: "100%",}}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          width: "100%",
+          height: "100%",
+        }}
+      >
         <div style={{ display: "flex", flexDirection: "column" }} id="navbar">
-          <h1 style={{ marginTop: "0%" }}>
+          <h1 style={{ marginTop: "0%" }} onClick={onSwitchToList}>
             <span style={{ color: "pink" }}>M</span>ultiKart
           </h1>
           <h3 style={{ width: "100%" }}>Main Menu</h3>
@@ -128,88 +178,175 @@ const AddUserComponent = ({ onSwitchToList }) => {
             </div>
           </div>
 
-          <div style={{ border: "1px", borderColor: "black", borderStyle: "solid", height: "80vh", width: "95%",}}>
+          <div
+            style={{
+              border: "1px",
+              borderColor: "black",
+              borderStyle: "solid",
+              height: "80vh",
+              width: "95%",
+            }}
+          >
             <form onSubmit={handleSubmit}>
-                <table>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <label>First Name</label>    
-                            </td>                        
-                            <td>
-                                <input type="text" placeholder="First Name" required />
-                            </td>                            
-                        </tr>
+              <table>
+                <tbody>
+                  <tr>
+                    <td>
+                      <label>First Name</label>
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        placeholder="First Name"
+                        required
+                        name="firstName"
+                        value={formData.firstName}
+                        onChange={handleChange}
+                      />
+                    </td>
+                  </tr>
 
+                  <tr>
+                    <td>
+                      <label>Last Name</label>
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        placeholder="Last Name"
+                        required
+                        name="lastName"
+                        value={formData.lastName}
+                        onChange={handleChange}
+                      />
+                    </td>
+                  </tr>
 
-                        <tr>
-                            <td>
-                                <label>Last Name</label>
-                            </td>                        
-                            <td>
-                                <input type="text" placeholder="Last Name" required />
-                            </td>                            
-                        </tr>
+                  <tr>
+                    <td>
+                      <label>Email Address</label>
+                    </td>
+                    <td>
+                      <input
+                        type="email"
+                        placeholder="user@example.com"
+                        name="email"
+                        value={formData.email}
+                        required
+                        // readOnly
+                        onChange={handleChange}
+                      />
+                    </td>
+                  </tr>
 
+                  <tr>
+                    <td>
+                      <label>Phone</label>
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        placeholder="Phone"
+                        required
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        pattern="\d{10}"
+                        maxLength="10"
+                        title="Please enter exactly 10 digits"
+                      />
+                    </td>
+                  </tr>
 
-                        <tr>
-                            <td>
-                                <label>Email Address</label>
-                            </td>                        
-                            <td>
-                                <input type="email" placeholder="user@example.com" value={"user@example.com"} required />
-                            </td>                            
-                        </tr>
+                  <tr>
+                    <td>
+                      <label htmlFor="role-select">Role</label>
+                    </td>
+                    <td>
+                      <select
+                        id="role-select"
+                        required
+                        name="role"
+                        value={formData.role}
+                        onChange={handleChange}
+                      >
+                        <option value="" disabled>
+                          -- Select a role --
+                        </option>
+                        {ROLE_OPTIONS.map((role) => (
+                          <option key={role} value={role}>
+                            {role
+                              .split(" ")
+                              .map(
+                                (word) =>
+                                  word.charAt(0).toUpperCase() + word.slice(1)
+                              )
+                              .join(" ")}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+                  </tr>
 
-                        <tr>
-                            <td>
-                                <label>Phone</label>
-                            </td>                        
-                            <td>
-                                <input type="text" placeholder="Phone" required />
-                            </td>                            
-                        </tr>
+                  <tr>
+                    <td>
+                      <label htmlFor="status-select">Status</label>
+                    </td>
+                    <td>
+                      <select
+                        id="status-select"
+                        required
+                        name="status"
+                        value={formData.status}
+                        onChange={handleChange}
+                      >
+                        <option value="" disabled>
+                          -- Select Status --
+                        </option>
+                        {STATUS_OPTIONS.map((status) => (
+                          <option key={status} value={status}>
+                            {status.charAt(0).toUpperCase() + status.slice(1)}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+                  </tr>
 
-                        <tr>
-                            <td>
-                                <label>Role</label>
-                            </td>                        
-                            <td>
-                                <input type="text" placeholder="Select Role" required />
-                            </td>                            
-                        </tr>
+                  <tr>
+                    <td>
+                      <label>Password</label>
+                    </td>
+                    <td>
+                      <input
+                        type="password"
+                        placeholder="Password"
+                        required
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                      />
+                    </td>
+                  </tr>
 
-                        <tr>
-                            <td>
-                                <label>Status</label>                
-                            </td>                        
-                            <td>
-                                <input type="text" placeholder="Select Status" required/>
-                            </td>                            
-                        </tr>
+                  <tr>
+                    <td>
+                      <label>Confirm Password</label>
+                    </td>
+                    <td>
+                      <input
+                        type="password"
+                        placeholder="Confirm Password"
+                        required
+                        name="confirmPassword"
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
 
-                        <tr>
-                            <td>
-                                <label>Password</label>                
-                            </td>                        
-                            <td>
-                                <input type="text" placeholder="Password" required />
-                            </td>                            
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <label>Confirm Password</label>                
-                            </td>                        
-                            <td>
-                                <input type="text" placeholder="Confirm Password" required />
-                            </td>                            
-                        </tr>
-
-                    </tbody>
-                </table>            
-              
-                <button type="submit">Save User</button>              
+              <button type="submit">Save User</button>
             </form>
           </div>
         </div>
