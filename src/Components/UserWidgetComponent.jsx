@@ -3,7 +3,7 @@ import users  from "../assets/data.js";
 import '../assets/UserWidgetComponent.css';
 // import { useState } from 'react';
 
-const UserWidgetComponent = ({onSwitchToAdd}) => {
+const UserWidgetComponent = ({onSwitchToAdd, onswitchToEdit}) => {
     // const [count, setCount] = useState(1);
 
     function navigator() {
@@ -20,6 +20,12 @@ const UserWidgetComponent = ({onSwitchToAdd}) => {
         // setCount(count + 1)
         onSwitchToAdd()
     }
+
+    const handleListClick = (userId) => {
+        // You would typically use the userId here to open an edit view, etc.
+        console.log(`User list component was clicked! ${userId}`);
+        onswitchToEdit(userId);
+    };
 
     return (
     <>
@@ -77,7 +83,9 @@ const UserWidgetComponent = ({onSwitchToAdd}) => {
                     </span>
                 </div>
                 <div style={{display:'flex', flexWrap: 'wrap', justifyContent:'flex-start'}}>  
-                   <UserListComponent users = {users}/>
+                   <UserListComponent users = {users}
+                    onItemClick={handleListClick}
+                   />
                 </div>
             </div>
         </div>

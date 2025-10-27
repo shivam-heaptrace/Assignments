@@ -1,3 +1,5 @@
+// obsolete
+
 // Mock data structure for the user details
 const mockUser = {
   id: 1,
