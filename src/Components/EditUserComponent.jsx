@@ -1,28 +1,26 @@
-import { useState, useEffect } from "react"; // 1. Import useEffect
-// You will likely need to import the data again if it's not a central state,
-// but remember that mutating this imported array is generally bad practice in React.
-import users from "../assets/data.js"; 
+import { useState, useEffect } from "react";
+import users from "../assets/data.js";
 
-// Define constants for role/status options if they are used in selects
 const UserRole = Object.freeze({
-    USER: "user",
-    ADMIN: "admin",
-    SUPER_ADMIN: "super admin",
+  USER: "user",
+  ADMIN: "admin",
+  SUPER_ADMIN: "super admin",
 });
+
 const ROLE_OPTIONS = Object.values(UserRole);
 
 const UserStatus = Object.freeze({
-    ACTIVE: "active",
-    INACTIVE: "inactive",  
+  ACTIVE: "active",
+  INACTIVE: "inactive",
 });
+
 const STATUS_OPTIONS = Object.values(UserStatus);
 
 const EditUserComponent = ({ userId, onSwitchToList, onSwitchToAdd }) => {
-  // 2. Initialize formData state
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
-    email: "", // Will be loaded from user data
+    email: "",
     phone: "",
     role: "",
     status: "",
@@ -31,37 +29,30 @@ const EditUserComponent = ({ userId, onSwitchToList, onSwitchToAdd }) => {
     lastLogin: new Date().toLocaleDateString(),
     action: "edit or delete",
   });
-  
+
   // 3. Use useEffect to load user data when the component mounts or userId changes
   useEffect(() => {
-    // Find the user object based on the userId prop
-    // Use find() for O(1) or O(n) search on the sorted array
     const userToEdit = users.find((u) => u.id === userId);
 
     if (userToEdit) {
-      // Populate the form data with the existing user's details
       setFormData({
         firstName: userToEdit.firstName || "",
         lastName: userToEdit.lastName || "",
         email: userToEdit.email || "user@example.com",
         phone: userToEdit.phone || "",
         role: userToEdit.role || "",
-        status: userToEdit.status ? UserStatus.ACTIVE : UserStatus.INACTIVE, // Convert boolean status to string
-        // We typically don't load the existing password into the form for security
-        password: "", 
+        status: userToEdit.status ? UserStatus.ACTIVE : UserStatus.INACTIVE,
+        password: "",
         confirmPassword: "",
         lastLogin: userToEdit.lastLogin || new Date().toLocaleDateString(),
         action: userToEdit.action || "edit or delete",
       });
     } else {
-        // Handle case where user ID is not found (optional)
-        console.error(`User with ID ${userId} not found.`);
-        // Redirect back to list
-        onSwitchToList(); 
+      console.error(`User with ID ${userId} not found.`);
+      onSwitchToList();
     }
   }, [userId, onSwitchToList]); // Rerun if userId changes
 
-  // 4. Universal Change Handler (remains the same)
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -70,7 +61,6 @@ const EditUserComponent = ({ userId, onSwitchToList, onSwitchToAdd }) => {
     }));
   };
 
-  // 5. Corrected Submit Handler for EDITING
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -78,59 +68,105 @@ const EditUserComponent = ({ userId, onSwitchToList, onSwitchToAdd }) => {
       alert("Error: Passwords do not match.");
       return;
     }
-    
+
     // Find the index of the user to update
     const userIndex = users.findIndex((u) => u.id === userId);
 
     if (userIndex !== -1) {
-        // Create the updated user object
-        const updatedUser = {
-            ...users[userIndex], // Keep existing properties (like id)
-            firstName: formData.firstName,
-            lastName: formData.lastName,
-            email: formData.email,
-            phone: formData.phone,
-            role: formData.role,
-            status: formData.status === UserStatus.ACTIVE, // Convert status string back to boolean
-            // Password logic needs to be handled carefully: only update if new password is provided
-            // ... (Add password update logic here if required)
-            lastLogin: formData.lastLogin, // Keep existing lastLogin or update it
-        };
+      // Create the updated user object
+      const updatedUser = {
+        ...users[userIndex], // Keep existing properties (like id)
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        role: formData.role,
+        status: formData.status === UserStatus.ACTIVE, // Convert status string back to boolean
+        // Password logic needs to be handled carefully: only update if new password is provided
+        // ... (Add password update logic here if required)
+        lastLogin: formData.lastLogin, // Keep existing lastLogin or update it
+      };
 
-        // ⚠️ MUTATING THE ARRAY (Bad practice, but necessary to match your setup)
-        users[userIndex] = updatedUser;
+      // ⚠️ MUTATING THE ARRAY (Bad practice, but necessary to match your setup)
+      users[userIndex] = updatedUser;
 
-        console.log(`User ID ${userId} updated!`, updatedUser);
-        alert(`The user "${updatedUser.firstName}" has been updated successfully!`);
+      console.log(`User ID ${userId} updated!`, updatedUser);
+      alert(
+        `The user "${updatedUser.firstName}" has been updated successfully!`
+      );
 
-        // Navigate back to the list view
-        onSwitchToList();
+      // Navigate back to the list view
+      onSwitchToList();
     } else {
-        alert("Error: Could not find user to update.");
+      alert("Error: Could not find user to update.");
     }
   };
 
-  // ... (navigator function remains the same)
-
-//   function navigator() {
-//     const navBar = document.getElementById("navbar");
-//     if (navBar) navBar.classList.toggle("hidden");
-//     else alert("Error: Element with ID 'navbar' not found.");
-//   }
-
+  function navigator() {
+    const navBar = document.getElementById("navbar");
+    if (navBar) navBar.classList.toggle("hidden");
+    else alert("Error: Element with ID 'navbar' not found.");
+  }
 
   // If the data hasn't loaded yet, show a loading message
   if (!formData.email && userId) {
-      return <div>Loading user details...</div>;
+    return <div>Loading user details...</div>;
   }
-  
+
   return (
     <div className="p-6 bg-white shadow-xl rounded-xl w-full max-w-md mx-auto transition-all duration-300 transform scale-100">
-      {/* ... (Your header/navigation JSX remains the same) ... */}
-      
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          width: "100%",
+          height: "100%",
+        }}
+      >
+        <div style={{ display: "flex", flexDirection: "column" }} id="navbar">
+          <h1 style={{ marginTop: "0%" }} onClick={onSwitchToList}>
+            <span style={{ color: "pink" }}>M</span>ultiKart
+          </h1>
+          <h3 style={{ width: "100%" }}>Main Menu</h3>
+          <nav>
+            <ul>
+              <li style={{ padding: "10px 0" }}>
+                <i className="fa-solid fa-gauge-high"></i> DashBoard
+              </li>
+              <li style={{ padding: "10px 0" }}>
+                <i className="fa-solid fa-user-plus"></i> Users
+              </li>
+            </ul>
+          </nav>
+        </div>
         <div style={{ width: "-webkit-fill-available" }}>
-        
-            {/* ... (Navigation/Header content) ... */}
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <span onClick={navigator}>
+              <i className="fa-solid fa-bars"></i>
+            </span>
+            <div
+              style={{
+                height: "5em",
+                width: "15em",
+                backgroundColor: "#d3cdcd",
+              }}
+            >
+              <div style={{ marginTop: "8px", display: "flex" }}>
+                <div style={{ width: "50%" }}>
+                  <img
+                    src="https://images.unsplash.com/photo-1583692331507-fc0bd348695d?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8bWFuJTIwZmFjZXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=500"
+                    alt="Man-face"
+                    style={{ borderRadius: "50%", height: "50%", width: "50%" }}
+                  ></img>
+                </div>
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  <label>Franklin Jr.</label>
+                  <sub>Super Admin</sub>
+                </div>
+                <i className="fa-solid fa-caret-down"></i>
+              </div>
+            </div>
+          </div>
 
           <div
             style={{
@@ -141,10 +177,31 @@ const EditUserComponent = ({ userId, onSwitchToList, onSwitchToAdd }) => {
             }}
           >
             <div>
-              <b>Edit User (ID: {userId})</b>
+              <b>Users</b>
             </div>
             <div id="buttons">
-              {/* ... (List/Grid buttons) ... */}
+              <span>
+                <button
+                  type="button"
+                  style={{
+                    backgroundColor: "white",
+                    color: "blueviolet",
+                    borderRadius: "11%",
+                  }}
+                >
+                  <i className="fa-solid fa-list"></i>
+                </button>
+                <button
+                  type="button"
+                  style={{
+                    backgroundColor: "blueviolet",
+                    color: "white",
+                    borderRadius: "11%",
+                  }}
+                >
+                  <i className="fa-solid fa-grip"></i>
+                </button>
+              </span>
               <button
                 type="button"
                 style={{
@@ -172,7 +229,9 @@ const EditUserComponent = ({ userId, onSwitchToList, onSwitchToAdd }) => {
               <table>
                 <tbody>
                   <tr>
-                    <td><label>First Name</label></td>
+                    <td>
+                      <label>First Name</label>
+                    </td>
                     <td>
                       <input
                         type="text"
@@ -186,7 +245,9 @@ const EditUserComponent = ({ userId, onSwitchToList, onSwitchToAdd }) => {
                   </tr>
 
                   <tr>
-                    <td><label>Last Name</label></td>
+                    <td>
+                      <label>Last Name</label>
+                    </td>
                     <td>
                       <input
                         type="text"
@@ -200,7 +261,9 @@ const EditUserComponent = ({ userId, onSwitchToList, onSwitchToAdd }) => {
                   </tr>
 
                   <tr>
-                    <td><label>Email Address</label></td>
+                    <td>
+                      <label>Email Address</label>
+                    </td>
                     <td>
                       <input
                         type="email"
@@ -215,7 +278,9 @@ const EditUserComponent = ({ userId, onSwitchToList, onSwitchToAdd }) => {
                   </tr>
 
                   <tr>
-                    <td><label>Phone</label></td>
+                    <td>
+                      <label>Phone</label>
+                    </td>
                     <td>
                       <input
                         type="text"
@@ -232,7 +297,9 @@ const EditUserComponent = ({ userId, onSwitchToList, onSwitchToAdd }) => {
                   </tr>
 
                   <tr>
-                    <td><label htmlFor="role-select">Role</label></td>
+                    <td>
+                      <label htmlFor="role-select">Role</label>
+                    </td>
                     <td>
                       <select
                         id="role-select"
@@ -241,10 +308,12 @@ const EditUserComponent = ({ userId, onSwitchToList, onSwitchToAdd }) => {
                         value={formData.role} // Use formData state
                         onChange={handleChange}
                       >
-                         <option value="" disabled>-- Select a role --</option>
+                        <option value="" disabled>
+                          -- Select a role --
+                        </option>
                         {ROLE_OPTIONS.map((role) => (
                           <option key={role} value={role}>
-                            {role.toUpperCase().replace('_', ' ')}
+                            {role.toUpperCase().replace("_", " ")}
                           </option>
                         ))}
                       </select>
@@ -252,7 +321,9 @@ const EditUserComponent = ({ userId, onSwitchToList, onSwitchToAdd }) => {
                   </tr>
 
                   <tr>
-                    <td><label htmlFor="status-select">Status</label></td>
+                    <td>
+                      <label htmlFor="status-select">Status</label>
+                    </td>
                     <td>
                       <select
                         id="status-select"
@@ -261,18 +332,22 @@ const EditUserComponent = ({ userId, onSwitchToList, onSwitchToAdd }) => {
                         value={formData.status} // Use formData state
                         onChange={handleChange}
                       >
-                          <option value="" disabled>-- Select Status --</option>
-                          {STATUS_OPTIONS.map((status) => (
-                              <option key={status} value={status}>
-                                  {status.charAt(0).toUpperCase() + status.slice(1)}
-                              </option>
-                          ))}
+                        <option value="" disabled>
+                          -- Select Status --
+                        </option>
+                        {STATUS_OPTIONS.map((status) => (
+                          <option key={status} value={status}>
+                            {status.charAt(0).toUpperCase() + status.slice(1)}
+                          </option>
+                        ))}
                       </select>
                     </td>
                   </tr>
 
                   <tr>
-                    <td><label>Password</label></td>
+                    <td>
+                      <label>Password</label>
+                    </td>
                     <td>
                       <input
                         type="password"
@@ -283,9 +358,11 @@ const EditUserComponent = ({ userId, onSwitchToList, onSwitchToAdd }) => {
                       />
                     </td>
                   </tr>
-                  
+
                   <tr>
-                    <td><label>Confirm Password</label></td>
+                    <td>
+                      <label>Confirm Password</label>
+                    </td>
                     <td>
                       <input
                         type="password"
@@ -304,7 +381,8 @@ const EditUserComponent = ({ userId, onSwitchToList, onSwitchToAdd }) => {
           </div>
         </div>
       </div>
-  );   
+    </div>
+  );
 };
 
 export default EditUserComponent;
