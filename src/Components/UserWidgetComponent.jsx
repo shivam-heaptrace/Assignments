@@ -5,6 +5,7 @@ import { useState } from 'react';
 
 const UserWidgetComponent = ({ onSwitchToAdd, onswitchToEdit }) => {
   const [users, setUsers] = useState(userList);
+  const [searchTerm, setSearchTerm] = useState('');
 
   function navigator() {
     const navBar = document.getElementById('navbar');
@@ -13,22 +14,22 @@ const UserWidgetComponent = ({ onSwitchToAdd, onswitchToEdit }) => {
     else alert("Error: Element with ID 'navbar' not found.");
   }
 
-  function addUser() {
-    // users.push({id : count, firstName : 'Rowam', lastName : 'Torres', email : 'rowan.torres@gmail.com', phone : '+1-235-473', lastLogin : '0205', role : 'user', status : true, action : 'edit or delete'})
-    // setCount(count + 1)
-    onSwitchToAdd();
-  }
-
   const onEditUser = (userId) => {
-    // You would typically use the userId here to open an edit view, etc.
     console.log(`Edit User component was clicked! ${userId}`);
     onswitchToEdit(userId);
   };
 
   const onDeleteUser = (userId) => {
-    console.log(`Delete User component was clicked! ${userId}`);
     setUsers(users.filter((user) => user.id !== userId));
+    alert(`User with ID:${userId} deleted successfully`);
   };
+
+  const filteredUsers = users.filter(
+    (user) =>
+      user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <>
@@ -85,7 +86,7 @@ const UserWidgetComponent = ({ onSwitchToAdd, onswitchToEdit }) => {
                 </button>
               </span>
               <button
-                onClick={addUser}
+                onClick={onSwitchToAdd}
                 type='button'
                 style={{ backgroundColor: 'blueviolet', color: 'white', borderRadius: '11%' }}
               >
@@ -108,11 +109,16 @@ const UserWidgetComponent = ({ onSwitchToAdd, onswitchToEdit }) => {
                 </span>
               </div>
               <span>
-                <input type='text' placeholder='🔍Search here'></input>
+                <input
+                  type='text'
+                  placeholder='🔍Search here'
+                  value={searchTerm}
+                  onChange={(event) => setSearchTerm(event.target.value)}
+                ></input>
               </span>
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start' }}>
-              <UserListComponent users={users} onEditUser={onEditUser} onDeleteUser={onDeleteUser} />
+              <UserListComponent users={filteredUsers} onEditUser={onEditUser} onDeleteUser={onDeleteUser} />
             </div>
           </div>
         </div>
