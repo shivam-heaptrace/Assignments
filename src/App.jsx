@@ -5,6 +5,8 @@ import EditUserComponent from "./Components/EditUserComponent";
 
 const App = () => {
   const [currentView, setCurrentView] = useState('list'); 
+  const [editingUserId, setEditingUserId] = useState(null);
+
   const switchToAdd = () => setCurrentView('add');
   const switchToList = () => setCurrentView('list'); 
   
@@ -12,8 +14,6 @@ const App = () => {
     setEditingUserId(userId);
     setCurrentView('edit')
   };  
-
-  const [editingUserId, setEditingUserId] = useState(null);
 
   let Content = <></>;
 
